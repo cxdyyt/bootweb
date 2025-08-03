@@ -1,0 +1,154 @@
+server:
+  port: 8080
+spring:
+  main:
+    allow-circular-references: true
+  application:
+    name: bootweb
+  datasource:
+    url: jdbc:mysql://192.168.50.140:3306/stdb
+    username: stu
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+#    driver-class-name: com.mysql.jdbc.Driver
+  mvc:
+    view:
+      prefix: /jsps/
+      suffix: .jsp
+  redis:
+    cluster:
+      nodes:
+        - 192.168.136.145:6381
+        - 192.168.136.145:6382
+        - 192.168.136.145:6383
+      max-redirects: 3
+    timeout: 5000
+    lettuce:
+      pool:
+        max-active: 8
+        max-wait: -1
+        max-idle: 8
+        min-idle: 0
+  kafka:
+    bootstrap-servers: 192.168.136.145:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      acks: all
+      retries: 2147483647
+      batch-size: 16384
+      linger:
+        ms: 1
+      buffer-memory: 33554432
+      properties:
+        enable.idempotence: true
+        max.in.flight.requests.per.connection: 5
+        transactional.id: tx-bootweb-
+    consumer:
+      group-id: my-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      enable-auto-commit: false
+      auto-commit-interval: 1000
+      max-poll-records: 500
+      properties:
+        session.timeout.ms: 30000
+        heartbeat.interval.ms: 1000
+        max.poll.interval.ms: 300000
+        isolation.level: read_committed
+    listener:
+      type: single
+      ack-mode: manual
+      concurrency: 1
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost
+        server-port: 8848
+      config:
+        server-addr: localhost
+        server-port: 8848
+    sentinel:
+      transport:
+        dashboard: localhost:8088  # Sentinel控制台地址
+        port: 8719  # 本地客户端与控制台通信的端口（默认8719，若被占用会自动+1）
+      datasource:
+        # 配置一个名为 flow-rule 的数据源
+        flow-rule:
+          nacos:
+            server-addr: localhost  # Nacos 地址
+            grpc-port: 8848
+            dataId: ${spring.application.name}-flow-rules  # 规则存储的 dataId
+            groupId: DEFAULT_GROUP  # 规则存储的 groupId
+            data-type: json  # 数据格式
+            rule-type: flow  # 规则类型，flow 表示流控规则
+      # 可选：关闭控制台懒加载（默认需触发一次请求才会在控制台显示服务）
+      eager: true
+  config:
+    import: nacos:bootweb.properties?group=DEFAULT_GROUP
+  jpa:
+    show-sql: true
+# 关键：指定Nacos gRPC端口（Nginx代理的主机8081）
+nacos:
+  remote:
+    client:
+      grpc:
+        server:
+          port: 8848  # 原生参数名，确保客户端识别
+          address: localhost
+seata:
+  enabled: true
+  application-id: ${spring.application.name}  # 应用ID，与服务名一致
+  tx-service-group: default_tx_group # 事务组名称，需与 Seata Server 配置一致
+  registry:
+    type: nacos  # 注册中心类型（nacos/eureka/zookeeper等）
+    nacos:
+      server-addr: localhost:8848  # Nacos 地址
+      group: SEATA_GROUP  # 默认为 SEATA_GROUP
+  config:
+    type: nacos  # 配置中心类型
+    nacos:
+      server-addr: localhost:8848
+      group: SEATA_GROUP
+      data-id: seataServer.yml
+  service:
+    vgroup-mapping:
+      default_tx_group: default  # 事务组与 Seata Server 集群的映射（default 为默认集群名）
+  data-source-proxy-mode: AT  # 事务模式（AT/TCC/SAGA/XA），默认 AT
+# MyBatis-Plus配置
+mybatis-plus:
+  # 配置MyBatis-Plus的全局配置文件位置
+  config-location: classpath:mybatis/mybatis-config.xml
+  # 配置Mapper XML文件位置
+  mapper-locations: classpath:mybatis/mapper/*.xml
+  # 配置实体类包路径，用于自动扫描和映射
+  type-aliases-package: my.springboot.start.bootstudy.entity
+  # 配置默认的ID类型
+  global-config:
+    db-config:
+      id-type: AUTO
+      # 不设置type-enum-handler，让MyBatis-Plus自动处理枚举类型
+logging:
+  level:
+    # 打印MyBatis的SQL语句、参数和结果
+    my.springboot.start.bootstudy.mapper: debug  # Mapper接口的日志级别
+    com.baomidou.mybatisplus: info  # MyBatis-Plus框架日志
+    org.apache.ibatis: debug  # MyBatis核心日志
+    java.sql: debug  # JDBC相关日志，包括SQL绑定参数值
+
+# 配置 Actuator 端点
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus  # 仅暴露 prometheus 端点（按需添加 health, info 等）
+  metrics:
+    export:
+      prometheus:
+        enabled: true  # 启用 Prometheus 导出
+  endpoint:
+    prometheus:
+      enabled: true  # 启用 prometheus 端点
+    health:
+      show-details: always  # 可选：健康检查显示详情

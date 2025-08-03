@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="my.springboot.start.bootstudy.mapper.MessageItemMapper">
+
+    <resultMap id="MessageItemMap" type="my.springboot.start.bootstudy.entity.MessageItem">
+        <id column="id" property="id"/>
+        <result column="message_id" property="messageId"/>
+        <result column="payload" property="payload"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, message_id, payload
+    </sql>
+
+    <insert id="insertIgnore" parameterType="my.springboot.start.bootstudy.entity.MessageItem">
+        INSERT INTO message_items (message_id, payload)
+        VALUES (#{messageId}, #{payload})
+        ON DUPLICATE KEY UPDATE payload = payload
+    </insert>
+
+    <select id="findByMessageId" resultMap="MessageItemMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM message_items
+        WHERE message_id = #{messageId}
+        LIMIT 1
+    </select>
+
+</mapper>
+
+

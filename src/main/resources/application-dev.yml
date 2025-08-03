@@ -1,0 +1,17 @@
+spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.136.145
+        server-port: 8080
+      config:
+        server-addr: 192.168.136.145
+        server-port: 8080
+# 关键：指定Nacos gRPC端口（Nginx代理的主机8081）
+nacos:
+  remote:
+    client:
+      grpc:
+        server:
+          port: 8081  # 原生参数名，确保客户端识别
+          address: 192.168.136.145
