@@ -64,20 +64,20 @@ spring:
   cloud:
     nacos:
       discovery:
-        server-addr: localhost
+        server-addr: 192.168.50.140
         server-port: 8848
       config:
-        server-addr: localhost
+        server-addr: 192.168.50.140
         server-port: 8848
     sentinel:
       transport:
-        dashboard: localhost:8088  # Sentinel控制台地址
+        dashboard: 192.168.50.140:8088  # Sentinel控制台地址
         port: 8719  # 本地客户端与控制台通信的端口（默认8719，若被占用会自动+1）
       datasource:
         # 配置一个名为 flow-rule 的数据源
         flow-rule:
           nacos:
-            server-addr: localhost  # Nacos 地址
+            server-addr: 192.168.50.140  # Nacos 地址
             grpc-port: 8848
             dataId: ${spring.application.name}-flow-rules  # 规则存储的 dataId
             groupId: DEFAULT_GROUP  # 规则存储的 groupId
@@ -96,7 +96,7 @@ nacos:
       grpc:
         server:
           port: 8848  # 原生参数名，确保客户端识别
-          address: localhost
+          address: 192.168.50.140
 seata:
   enabled: true
   application-id: ${spring.application.name}  # 应用ID，与服务名一致
@@ -104,12 +104,12 @@ seata:
   registry:
     type: nacos  # 注册中心类型（nacos/eureka/zookeeper等）
     nacos:
-      server-addr: localhost:8848  # Nacos 地址
+      server-addr: 192.168.50.140:8848  # Nacos 地址
       group: SEATA_GROUP  # 默认为 SEATA_GROUP
   config:
     type: nacos  # 配置中心类型
     nacos:
-      server-addr: localhost:8848
+      server-addr: 192.168.50.140:8848
       group: SEATA_GROUP
       data-id: seataServer.yml
   service:
