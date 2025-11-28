@@ -18,11 +18,9 @@ public class RedisConfig {
 
     private String host="192.168.136.145";
 
-    @Value("${redis.port:6379}")
-    private int port;
+    private int port=6379;
 
-    @Value("${redis.password:}")
-    private String password;
+    private String password="";
 
     // 配置RedisTemplate
     @Bean

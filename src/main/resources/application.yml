@@ -29,7 +29,6 @@ spring:
         max-wait: -1
         max-idle: 8
         min-idle: 0
-    host: 192.168.136.145
   kafka:
     bootstrap-servers: 192.168.136.145:9092
     producer:
