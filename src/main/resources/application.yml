@@ -66,6 +66,8 @@ spring:
       discovery:
         server-addr: 192.168.50.140
         server-port: 8848
+      ip: bootweb-my-dev.apps-crc.testing
+      port: 80
       config:
         server-addr: 192.168.50.140
         server-port: 8848
