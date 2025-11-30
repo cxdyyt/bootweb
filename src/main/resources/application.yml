@@ -45,7 +45,6 @@ spring:
         max.in.flight.requests.per.connection: 5
         transactional.id: tx-bootweb-
     consumer:
-      group-id: my-group
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
@@ -149,6 +148,8 @@ management:
     export:
       prometheus:
         enabled: true  # 启用 Prometheus 导出
+    tags:
+      application: bootweb   # 关键：给所有指标加上 application=bootweb
   endpoint:
     prometheus:
       enabled: true  # 启用 prometheus 端点
