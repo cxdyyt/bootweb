@@ -143,7 +143,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: prometheus  # 仅暴露 prometheus 端点（按需添加 health, info 等）
+        include: prometheus,health,info  # 仅暴露 prometheus 端点（按需添加 health, info 等）
   metrics:
     export:
       prometheus:
@@ -155,3 +155,5 @@ management:
       enabled: true  # 启用 prometheus 端点
     health:
       show-details: always  # 可选：健康检查显示详情
+    info:
+      enabled: true  # 启用 info 端点
