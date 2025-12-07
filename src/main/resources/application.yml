@@ -1,5 +1,19 @@
 server:
-  port: 8080
+  # HTTPS端口（默认443，开发环境可自定义如8443）
+  port: 8443
+  ssl:
+    # 证书类型（PKCS12/JKS，根据证书格式选择）
+    key-store-type: PKCS12
+    # 证书路径（classpath: 表示resources目录下）
+    key-store: classpath:cert/mytls-new.p12
+    # 密钥库密码（生成/申请证书时设置的密码）
+    key-store-password: 123456
+    # 证书别名（生成证书时的alias，如上面的mytls）
+    key-alias: mytls
+    # 可选：指定TLS协议版本（禁用低版本，提升安全性）
+    enabled-protocols: TLSv1.2,TLSv1.3
+    # 可选：指定加密套件（仅允许安全的套件）
+    ciphers: TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
 spring:
   main:
     allow-circular-references: true
@@ -65,6 +79,7 @@ spring:
       discovery:
         server-addr: 192.168.50.140
         server-port: 8848
+        ip: 192.168.50.140
       ip: bootweb-my-dev.apps-crc.testing
       port: 80
       config:
